@@ -1,3 +1,20 @@
-.display {
-    border: solid 3px black;
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    align-content: center;
 }
+
+.display {
+    border: solid 1px black;
+}
+
+.numpad {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.numpad button {
+    flex-basis: 25%;
+}
+
