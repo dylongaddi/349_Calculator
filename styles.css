@@ -1,17 +1,19 @@
 * {
-    background-color: silver;
+    background-color: white;
 }
 
 button {
-    border: 1px solid black;
+    border: 1px solid #000000;
     border-radius: 3px;
+
 }
 
 .main {
     background-color: #edfffb;
+    background-image: linear-gradient(silver, silver, black);
     display: flex;
     flex-direction: column;
-    width: 40%;
+    width: 30%;
     margin: auto;
     align-items: center;
     border: 1px solid;
@@ -34,6 +36,7 @@ button {
 
 .deleters {
     background-color: #edfffb;
+    background-image: linear-gradient(silver, silver);
     display: flex;
     justify-content: space-evenly;
     padding-bottom: 3%;
@@ -48,6 +51,7 @@ button {
 
 .numpad {
     background-color: #edfffb;
+    background-image: linear-gradient(silver, black);
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
