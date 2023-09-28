@@ -1,26 +1,31 @@
 const numberButtons = document.querySelectorAll("button.number")
-const screenDisplay = document.getElementById("display")
+const currScreenDisplay = document.getElementById("currScreenDisplay")
+const storedScreenDisplay = document.getElementById("storedScreenDisplay")
 const clearButton = document.getElementById("clear")
-
-
+let storedNums = []
 
 console.log(numberButtons)
 
 function clearDisplay() {
-    screenDisplay.innerHTML = ""
+    storedScreenDisplay.innerHTML = "0"
+    currScreenDisplay.innerHTML = "0"
+    storedNums = []
 }
 
 function appendDisplay(num) {
-    screenDisplay.innerHTML += num.innerHTML
-    console.log(num.innerHTML)
+    if (currScreenDisplay.innerHTML == 0) {
+        currScreenDisplay.innerHTML = ""
+    }
+    currScreenDisplay.innerHTML += num.innerHTML
+    if (storedNums.length == 0) {
+        storedScreenDisplay.innerHTML = currScreenDisplay.innerHTML
+    }
 }
 
-numberButtons.forEach((numberButton) => { 
-    numberButton.addEventListener("click", () => appendDisplay(numberButton))
-})
-
-
-
+function appendStoredNums() {
+    currScreenDisplay.innerHTML
+    storedNums.push(currScreenDisplay.innerHTML)
+}
 
 
 
@@ -45,13 +50,22 @@ function divide(num1, num2) {
     }
 }
 
+numberButtons.forEach((numberButton) => { 
+    numberButton.addEventListener("click", () => appendDisplay(numberButton))
+})
 
-document.addEventListener('keyup', (event) => {
+document.addEventListener('keyup', (event) => { //event listener for keyboard presses
         let appendedNum = parseFloat(event.key)
         if (isNaN(appendedNum)) {
            return
         }
-        screenDisplay.innerHTML += appendedNum
+        if (currScreenDisplay.innerHTML == 0) {
+            currScreenDisplay.innerHTML = ""
+        }
+        currScreenDisplay.innerHTML += appendedNum
+        if (storedNums.length == 0) {
+            storedScreenDisplay.innerHTML = currScreenDisplay.innerHTML
+        }
     }
 )
 

@@ -26,13 +26,28 @@ button {
     background-image: linear-gradient(white, white, silver);
     border: solid 1px black;
     margin-bottom: 3%;
-    padding-top: 18%;
-    padding-bottom: 2%;
-    padding-right: 2%;
-    padding-left: 2%;
     width: 100%;
     text-align: end;
+    overflow-wrap: break-word;
+    display: flex;
+    flex-direction: column;
 }
+
+#storedScreenDisplay {
+    font-size: small;
+    padding-top: 2%;
+    padding-right: 3%;
+    background-image: linear-gradient(white, silver, silver);
+}
+
+#currScreenDisplay {
+    font-size: x-large;
+    padding-top: 3%;
+    padding-right: 3%;
+    padding-bottom: 3%;
+    background-image: linear-gradient(silver, silver, silver);
+}
+
 
 .deleters {
     background-color: #edfffb;
