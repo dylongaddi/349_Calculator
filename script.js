@@ -10,7 +10,6 @@ const decimalPointButton = document.querySelector("button.decimalPoint")
 let storedNums = []
 let operator = null
 let isOperating = false
-let isEqualing = false
 
 function add(num1, num2) {
     return (num1 + num2)
@@ -38,7 +37,6 @@ function clearDisplay() {
     currScreenDisplay.innerHTML = "0"
     storedNums = []
     operator = null
-    isEqualing = false
 }
 
 function getFirstNum() {
@@ -64,6 +62,11 @@ function clearStoredNums() {
 }
 
 function backspaceDisplay() {
+    const currLen = currScreenDisplay.innerHTML.toString().length
+    let storedLen
+    if (storedNums[0]) {
+        storedLen = storedNums[0].toString().length
+    }
     if (storedScreenDisplay.innerHTML == '0') {
         return
     } else if (storedScreenDisplay.innerHTML.length == 1) {
@@ -72,6 +75,9 @@ function backspaceDisplay() {
     } else {
         storedScreenDisplay.innerHTML = storedScreenDisplay.innerHTML.slice(0, -1)
         currScreenDisplay.innerHTML = currScreenDisplay.innerHTML.slice(0, -1) 
+    }
+    if (currScreenDisplay.innerHTML != currLen < storedLen) {
+        storedNums[0] = parseFloat(currScreenDisplay.innerHTML)
     }
 }
 
@@ -85,8 +91,12 @@ function appendDisplay(key) {
 }
 
 function appendStoredNums(num) {
-    if (storedNums.length < 2 && typeof num == "number") {
-        storedNums.push(parseFloat(num))
+    if (storedNums.length == 2) {
+        return
+    } else if (storedNums.length == 0) {
+        storedNums[0] = parseFloat(num)
+    } else if (storedNums.length == 1) {
+        storedNums[1] = parseFloat(num)
     }
 }
 
@@ -110,15 +120,20 @@ function setOperator(operatorButton) {
 }
 
 function getAnswer() {
-    if (operator && storedNums.length == 2 && (!isNaN(storedNums[1]))) {
-        const answer = operator(storedNums[0], storedNums[1])
+    if (operator && (!isNaN(storedNums[1]))) {
+        const answer = operator(parseFloat(storedNums[0]), parseFloat(storedNums[1]))
         const stored = storedScreenDisplay.innerHTML
         clearDisplay()
-        storedScreenDisplay.innerHTML = stored
-        currScreenDisplay.innerHTML = answer
-        storedNums = []
+        if (stored == currScreenDisplay.innerHTML) {
+            storedScreenDisplay.innerHTML = stored
+            currScreenDisplay.innerHTML = answer
+        } else {
+            storedScreenDisplay.innerHTML = answer
+            currScreenDisplay.innerHTML = answer
+        }
+        storedNums = [answer]
         operator = null
-    } else {
+    } else  {
         return
     }
 }
@@ -129,17 +144,31 @@ numberButtons.forEach((numberButton) => {
 
 operatorButtons.forEach((operatorButton) => {
     operatorButton.addEventListener("click", () => {
-        const num1 = getFirstNum()
         const currScreen = currScreenDisplay.innerHTML
+        if (currScreen == '0') {
+            return
+        }
+        const num1 = getFirstNum()
+        if (getSecondNum()) {
+            return
+        }
+
         if (operator && currScreen.length == (num1.toString().length+1)) {
             backspaceDisplay()
             appendDisplay(operatorButton.innerHTML)
             setOperator(operatorButton.innerHTML)
+        } else if (operator) {
+            appendDisplay(operatorButton.innerHTML)
+            setOperator(operatorButton.innerHTML)
         }
-        if (!operator && currScreen != '0') {
+        if (!operator && (currScreen != '0' || currScreen != "")) {
             setOperator(operatorButton.innerHTML)
             appendDisplay(operatorButton.innerHTML)
-            appendStoredNums(num1)
+            if (storedNums.length == 0) {
+                appendStoredNums(num1)
+            } else if (storedNums.length == 1) {
+                storedNums[0] = num1
+            }
         }
     })
 })
@@ -154,23 +183,38 @@ document.addEventListener('keyup', (event) => { //event listener for keyboard pr
 
 document.addEventListener("keyup", (event) => { //event listener for backspace
     if (event.key == "Backspace") {
-
         backspaceDisplay()
     }
 })
 
 document.addEventListener("keyup", (event) => { //event listener for backspace
-    if ((event.key == '+') || (event.key == '-') || (event.key == 'x' || event.key == '/')) {
-        if (operator) {
+    if ((event.key == '+') || (event.key == '-') || (event.key == 'x') || (event.key == '/')) {
+        const currScreen = currScreenDisplay.innerHTML
+        if (currScreenDisplay.innerHTML == '0') {
+            return
+        }
+        const num1 = getFirstNum()
+        if (getSecondNum()) {
+            return
+        }
+
+        if (operator && currScreen.length == (num1.toString().length+1)) {
             backspaceDisplay()
             appendDisplay(event.key)
             setOperator(event.key)
+        } else if (operator) {
+            appendDisplay(event.key)
+            setOperator(event.key)
         }
-        if (!operator) {
+
+        if ((!operator) && (currScreen != '0' || currScreen != "")) {
             setOperator(event.key)
             appendDisplay(event.key)
-            let num1 = getFirstNum()
-            appendStoredNums(num1)
+            if (storedNums.length == 0) {
+                appendStoredNums(num1)
+            } else if (storedNums.length == 1) {
+                storedNums[0] = num1
+            }
         }
     }
 })
