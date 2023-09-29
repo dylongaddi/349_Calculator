@@ -52,6 +52,9 @@ function getSecondNum() {
         const currNums = currScreenDisplay.innerHTML
         let secondNumIndex = (storedNums[0]).toString().length + 1
         const secondNum = currNums.substring(secondNumIndex)
+        if (isNaN(parseFloat(secondNum))) {
+            return
+        }
         return parseFloat(secondNum)
     }
 }
@@ -88,7 +91,7 @@ function appendStoredNums(num) {
 }
 
 function setOperator(operatorButton) {
-    switch (operatorButton.innerHTML) {
+    switch (operatorButton) {
         case '+':
             operator = add
             break
@@ -107,10 +110,12 @@ function setOperator(operatorButton) {
 }
 
 function getAnswer() {
-    if (operator && storedNums.length == 2) {
+    if (operator && storedNums.length == 2 && (!isNaN(storedNums[1]))) {
         const answer = operator(storedNums[0], storedNums[1])
+        const stored = storedScreenDisplay.innerHTML
         clearDisplay()
-        appendDisplay(answer)
+        storedScreenDisplay.innerHTML = stored
+        currScreenDisplay.innerHTML = answer
         storedNums = []
         operator = null
     } else {
@@ -124,18 +129,16 @@ numberButtons.forEach((numberButton) => {
 
 operatorButtons.forEach((operatorButton) => {
     operatorButton.addEventListener("click", () => {
-        if (storedNums.length == 1) {
-
-        }
-        if (operator) {
+        const num1 = getFirstNum()
+        const currScreen = currScreenDisplay.innerHTML
+        if (operator && currScreen.length == (num1.toString().length+1)) {
             backspaceDisplay()
             appendDisplay(operatorButton.innerHTML)
-            setOperator(operatorButton)
+            setOperator(operatorButton.innerHTML)
         }
-        if (!operator) {
-            setOperator(operatorButton)
+        if (!operator && currScreen != '0') {
+            setOperator(operatorButton.innerHTML)
             appendDisplay(operatorButton.innerHTML)
-            let num1 = getFirstNum()
             appendStoredNums(num1)
         }
     })
@@ -150,16 +153,45 @@ document.addEventListener('keyup', (event) => { //event listener for keyboard pr
 })
 
 document.addEventListener("keyup", (event) => { //event listener for backspace
-    if ((event.key == 8) || (event.code == "Backspace")) {
-        console.log("backspace")
+    if (event.key == "Backspace") {
+
         backspaceDisplay()
-        console.log(operator)
     }
+})
+
+document.addEventListener("keyup", (event) => { //event listener for backspace
+    if ((event.key == '+') || (event.key == '-') || (event.key == 'x' || event.key == '/')) {
+        if (operator) {
+            backspaceDisplay()
+            appendDisplay(event.key)
+            setOperator(event.key)
+        }
+        if (!operator) {
+            setOperator(event.key)
+            appendDisplay(event.key)
+            let num1 = getFirstNum()
+            appendStoredNums(num1)
+        }
+    }
+})
+
+document.addEventListener("keyup", (event)=> {
+    if (event.key == "Enter") {
+        if (!operator) {
+            return
+        }
+        let num2 = getSecondNum()
+        appendStoredNums(num2)
+        getAnswer()  
+    }
+})
+
+deleteButton.addEventListener("click", ()=> {
+    backspaceDisplay()
 })
 
 clearButton.addEventListener("click", ()=> {
     clearDisplay()
-    clearStoredNums()
 })
 
 equalsButton.addEventListener("click", ()=> {
@@ -167,8 +199,6 @@ equalsButton.addEventListener("click", ()=> {
         return
     }
     let num2 = getSecondNum()
-
     appendStoredNums(num2)
-    appendDisplay("=")
     getAnswer()
 })
