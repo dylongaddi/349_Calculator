@@ -5,6 +5,7 @@ const clearButton = document.getElementById("clear")
 const equalsButton = document.getElementById("equals")
 const deleteButton = document.getElementById("delete")
 const operatorButtons = document.querySelectorAll("button.operator")
+const decimalPointButton = document.querySelector("button.decimalPoint")
 
 let storedNums = []
 let operator = null
@@ -45,7 +46,7 @@ function getFirstNum() {
 }
 
 function getSecondNum() {
-    if (!operator) {
+    if (!operator || storedNums.length < 1) {
         return
     } else {
         const currNums = currScreenDisplay.innerHTML
@@ -81,7 +82,9 @@ function appendDisplay(key) {
 }
 
 function appendStoredNums(num) {
-        storedNums.push(num)
+    if (storedNums.length < 2 && typeof num == "number") {
+        storedNums.push(parseFloat(num))
+    }
 }
 
 function setOperator(operatorButton) {
@@ -110,6 +113,8 @@ function getAnswer() {
         appendDisplay(answer)
         storedNums = []
         operator = null
+    } else {
+        return
     }
 }
 
@@ -162,7 +167,8 @@ equalsButton.addEventListener("click", ()=> {
         return
     }
     let num2 = getSecondNum()
+
     appendStoredNums(num2)
     appendDisplay("=")
-    getAnswer()   
+    getAnswer()
 })
