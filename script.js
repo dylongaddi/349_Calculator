@@ -2,6 +2,7 @@ const numberButtons = document.querySelectorAll("button.number")
 const currScreenDisplay = document.getElementById("currScreenDisplay")
 const storedScreenDisplay = document.getElementById("storedScreenDisplay")
 const clearButton = document.getElementById("clear")
+const equalsButton = document.getElementById("equals")
 let storedNums = []
 
 console.log(numberButtons)
@@ -10,6 +11,11 @@ function clearDisplay() {
     storedScreenDisplay.innerHTML = "0"
     currScreenDisplay.innerHTML = "0"
     storedNums = []
+}
+
+function clearDisplay() {
+    storedScreenDisplay.innerHTML.slice(0, -1)
+    currScreenDisplay.innerHTML.slice(0, -1) 
 }
 
 function appendDisplay(num) {
@@ -23,10 +29,16 @@ function appendDisplay(num) {
 }
 
 function appendStoredNums() {
-    currScreenDisplay.innerHTML
-    storedNums.push(currScreenDisplay.innerHTML)
+    if (storedNums.length < 2) {
+        storedNums.push(currScreenDisplay.innerHTML)
+    }   
 }
 
+function getAnswer(operator) {
+    if (storedNums.length == 2) {
+        return operator(storedNums[0], storedNums[1])
+    }
+}
 
 
 function add(num1, num2) {
@@ -70,3 +82,4 @@ document.addEventListener('keyup', (event) => { //event listener for keyboard pr
 )
 
 clearButton.addEventListener('click', ()=> clearDisplay())
+equalButton.addEventListener('click', ()=> getAnswer(operator))
