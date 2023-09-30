@@ -198,7 +198,7 @@ document.addEventListener("keyup", (event) => { //event listener for backspace
         const text = currScreenDisplay.innerHTML.toString()
         if (!(text.includes('.'))) {
             appendDisplay('.')
-        } else if (text.includes('.') && operator) {
+        } else if (operator &&  !(text.includes('.', storedNums[0].toString().length))) {
             appendDisplay('.')
         }
     }
@@ -253,13 +253,10 @@ clearButton.addEventListener("click", ()=> clearDisplay())
 
 decimalPointButton.addEventListener("click", ()=> {
     const text = currScreenDisplay.innerHTML.toString()
-    let counter = 0
     if (!(text.includes('.'))) {
         appendDisplay('.')
-        counter++
-    } else if (text.includes('.') && operator && counter < 2) {
+    } else if (operator && !(text.includes('.', storedNums[0].toString().length))) {
         appendDisplay('.')
-        counter++
     }
 })
 
