@@ -5,7 +5,7 @@ const clearButton = document.getElementById("clear")
 const equalsButton = document.getElementById("equals")
 const deleteButton = document.getElementById("delete")
 const operatorButtons = document.querySelectorAll("button.operator")
-const decimalPointButton = document.querySelector("button.decimalPoint")
+const decimalPointButton = document.getElementById("decimalPoint")
 
 let storedNums = []
 let operator = null
@@ -62,11 +62,16 @@ function clearStoredNums() {
 }
 
 function backspaceDisplay() {
+    if (currScreenDisplay.innerHTML == "Undefined") {
+        clearDisplay()
+        return
+    }
     const currLen = currScreenDisplay.innerHTML.toString().length
     let storedLen
     if (storedNums[0]) {
         storedLen = storedNums[0].toString().length
     }
+
     if (storedScreenDisplay.innerHTML == '0') {
         return
     } else if (storedScreenDisplay.innerHTML.length == 1) {
@@ -76,6 +81,7 @@ function backspaceDisplay() {
         storedScreenDisplay.innerHTML = storedScreenDisplay.innerHTML.slice(0, -1)
         currScreenDisplay.innerHTML = currScreenDisplay.innerHTML.slice(0, -1) 
     }
+    
     if (currScreenDisplay.innerHTML != currLen < storedLen) {
         storedNums[0] = parseFloat(currScreenDisplay.innerHTML)
     }
@@ -188,6 +194,17 @@ document.addEventListener("keyup", (event) => { //event listener for backspace
 })
 
 document.addEventListener("keyup", (event) => { //event listener for backspace
+    if (event.key == '.') {
+        const text = currScreenDisplay.innerHTML.toString()
+        if (!(text.includes('.'))) {
+            appendDisplay('.')
+        } else if (text.includes('.') && operator) {
+            appendDisplay('.')
+        }
+    }
+})
+
+document.addEventListener("keyup", (event) => { //event listener for backspace
     if ((event.key == '+') || (event.key == '-') || (event.key == 'x') || (event.key == '/')) {
         const currScreen = currScreenDisplay.innerHTML
         if (currScreenDisplay.innerHTML == '0') {
@@ -230,12 +247,20 @@ document.addEventListener("keyup", (event)=> {
     }
 })
 
-deleteButton.addEventListener("click", ()=> {
-    backspaceDisplay()
-})
+deleteButton.addEventListener("click", ()=> backspaceDisplay())
 
-clearButton.addEventListener("click", ()=> {
-    clearDisplay()
+clearButton.addEventListener("click", ()=> clearDisplay())
+
+decimalPointButton.addEventListener("click", ()=> {
+    const text = currScreenDisplay.innerHTML.toString()
+    let counter = 0
+    if (!(text.includes('.'))) {
+        appendDisplay('.')
+        counter++
+    } else if (text.includes('.') && operator && counter < 2) {
+        appendDisplay('.')
+        counter++
+    }
 })
 
 equalsButton.addEventListener("click", ()=> {
